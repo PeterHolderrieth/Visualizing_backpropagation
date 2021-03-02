@@ -5,6 +5,10 @@ from sklearn.decomposition import PCA
 from load_data import load_mnist_sevens_nines
 from train_mlp import train_mlp 
 
+'''
+This script created the video found in 'videos/final_file.mp4'
+'''
+
 #Load data:
 X_train,Y_train,X_test,Y_test=load_mnist_sevens_nines()
 dim_input=50

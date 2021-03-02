@@ -3,13 +3,14 @@ import numpy as np
 from matplotlib.colors import Normalize
 from utils import give_ranks_of_array
 
+
 def visualize_neural_net(ax, left, right, bottom, top, layer_list,weight_list,cmap=None,ranks=False,threshold=None):
     '''
     Function to visualize a multilayer perceptron (fully connected neural network)
     This is a modification of https://gist.github.com/craffel/2d727968c3aaebd10359
     Usage by:
         >>> fig = plt.figure(figsize=(12, 12))
-        >>> draw_neural_net(fig.gca(), .1, .9, .1, .9, [4, 7, 2])
+        >>> visualize_neural_net(fig.gca(), .1, .9, .1, .9, [4, 7, 2], weight_list)
     
     Input:
         - ax : matplotlib.axes.AxesSubplot
@@ -76,16 +77,23 @@ def visualize_neural_net(ax, left, right, bottom, top, layer_list,weight_list,cm
     
     return(ax)
 
-# def generate_imagefiles(img,folder):
-#     for i in range(len(img)):
-#         plt.imshow(img[i], cmap=plt.cm.Greys_r)
-#         plt.savefig(folder + "/file%02d.png" % i)
 
-    #os.chdir(folder)
-    # subprocess.call([
-    #     'ffmpeg', '-framerate', '8', '-i', 'file%02d.png', '-r', '30', '-pix_fmt', 'yuv420p',
-    #     'video_name.mp4'
-    # ])
-    # for file_name in glob.glob("*.png"):
-    #     os.remove(file_name)
 
+'''
+#Plot example:
+fig = plt.figure(figsize=(12, 12))
+
+#Number of layers:
+dim_layers=[30,30,15,10]
+n_layers=len(dim_layers)-1
+weight_scale=0.1
+
+#Initialize random weight list:
+weight_list=[np.random.normal(size=(dim_layers[it+1],dim_layers[it]),loc=0.,
+                        scale=weight_scale) for it in range(n_layers)]
+
+visualize_neural_net(fig.gca(), .01, .99, .01, .99, dim_layers, weight_list,cmap=plt.cm.coolwarm,threshold=0.2)
+
+plt.tight_layout()
+plt.savefig("plots/illustrate_visualization.pdf")
+'''

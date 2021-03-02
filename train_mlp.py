@@ -6,6 +6,13 @@ import cv2
 from forward_backward import forward, backward, loss_func, accuracy 
 from visualize_neural_nets import visualize_neural_net
 
+'''
+This script provides a function which trains a multilayer perceptron (fully connected
+neural network). Additionally, it provides a function which creates a video visualizing
+the training by plotting the neural network over time.
+'''
+
+
 def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
                 X_train,Y_train,X_test,Y_test,print_every=100,
                 make_video=False,vis_subset=None,video_name=None,plot_every=None,video_length=None,prop_weight_to_grad=3):
@@ -130,7 +137,7 @@ def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
                 plt.close()
                 
                 #--------------------------
-                #1. WEIGHTS PLOT
+                #2. WEIGHT PLOT
                 #--------------------------
                 fig,ax = plt.subplots(nrows=1,ncols=2,figsize=figsize)
                 

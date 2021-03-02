@@ -1,5 +1,0 @@
-1.  Create video from training. 
-Current bugs: 
-- I do not understand the time resolution. That seems weird.
-- The colourmaps (in particular the normalization) seem weird. Change that.
-2. Do all the exercises.
