@@ -22,9 +22,9 @@ X_test=X_test_transform[ignore_pcs:][permutation]
 
 #Set hyperparameters:
 WEIGHT_SCALE=0.01
-N_EPOCHS=200
+N_EPOCHS=100
 LR=1e-1
-WEIGHT_DECAY=0.0001
+WEIGHT_DECAY=0.0
 DIM_LAYERS=[dim_input]+[20]+[1]
 VIS_SUBSET=DIM_LAYERS
 

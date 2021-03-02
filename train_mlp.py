@@ -8,7 +8,7 @@ from visualize_neural_nets import visualize_neural_net
 
 def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
                 X_train,Y_train,X_test,Y_test,print_every=100,
-                make_video=False,vis_subset=None,video_name=None,plot_every=None,video_length=None,prop_weight_to_grad=2):
+                make_video=False,vis_subset=None,video_name=None,plot_every=None,video_length=None,prop_weight_to_grad=3):
 
     #Number of layers:
     n_layers=len(dim_layers)-1
@@ -109,7 +109,7 @@ def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
 
                 #Visualize gradients:
                 weight_list_visualize=[weight_grad_list[j][:,:vis_subset[j]] for j in range(len(weight_list)-1)]+[weight_list[-1]]            
-                visualize_neural_net(ax[0], .01, .99, .01, .99, vis_subset,weight_list_visualize,cmap=plt.cm.cividis,ranks=True)
+                visualize_neural_net(ax[0], .01, .99, .01, .99, vis_subset,weight_list_visualize,cmap=plt.cm.turbo,ranks=True)
                 
                 #Visualize logging:
                 it_vec=np.arange(len(val_acc_list))
@@ -122,7 +122,7 @@ def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
                 ax[1].legend()
                 
                 #Create suptitle:
-                fig.suptitle("Gradients || Accuracy: %.4f"%acc_test)
+                fig.suptitle("%10s || Accuracy: %.4f"%("Gradients",acc_test))
 
                 #Save to video writer:
                 plt.savefig(filename)
@@ -137,7 +137,7 @@ def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
                 #Visualize network:
                 weight_list_visualize=[weight_list[j][:,:vis_subset[j]] for j in range(len(weight_list)-1)]+[weight_grad_list[-1]]            
                 visualize_neural_net(ax[0], .01, .99, .01, .99, vis_subset,weight_list_visualize,cmap=plt.cm.copper,ranks=False,threshold=0.7)
-                fig.suptitle("Weights  || Accuracy: %.4f"%acc_test)
+                fig.suptitle("%10s || Accuracy: %.4f"%("Weights",acc_test))
                 
                 ax[1].plot(it_vec,train_acc_list,color='blue',label='train')  
                 ax[1].plot(it_vec,val_acc_list,color='orange',label='test')  
