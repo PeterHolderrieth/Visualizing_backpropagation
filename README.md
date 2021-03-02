@@ -5,8 +5,8 @@ neural networks. It is meant to serve as an illustration for students studying t
 
 **Visualize backpropagation**
 
-I also provide a tool to visuale training. See the following video as an example (for the uncompressed
-files, see ".mp4" files in "videos/").
+I also provide a tool to visuale training. See the following video as an example (for the full
+file, see "https://github.com/PeterHolderrieth/backpropagation/blob/master/videos/final_file.mp4".
 
 <img src="https://github.com/PeterHolderrieth/backpropagation/blob/master/videos/final_file.gif">
 
