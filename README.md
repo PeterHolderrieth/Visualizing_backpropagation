@@ -13,7 +13,7 @@ We provide:
 
 ## 1. Visualizing neural networks
 
-The visualization tool for fully connected neural networks allows to plot a MLP with synaptic connection colored accordings to weights. 
+The visualization tool for fully connected neural networks allows to plot a fully connected neural network with connections colored accordings to weights. 
 The code can be found in the ```visualize_neural_nets.py``` file.
 
 <img src="https://github.com/PeterHolderrieth/backpropagation/blob/master/plots/illustrate_visualization.png" width="300" height="300">
