@@ -35,7 +35,7 @@ def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
         #fig,ax = plt.subplots(ncols=2,nrows=1,figsize=(24, 12))
         #ax[]
         weight_list_visualize=[weight_list[j][:,:vis_subset[j]] for j in range(len(weight_list)-1)]+[weight_list[-1]]
-        visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize)
+        visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize,cmap=plt.cm.Greys)
         #visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize)
         #ax[1].set_xlim(xlim)
         #ax[1].set_ylim(ylim)
@@ -45,7 +45,7 @@ def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
         frame = cv2.imread(filename)
         height, width, layers = frame.shape
         
-        fps=max(int((n_epochs+1)/video_length),1)
+        fps=max(int(0.5*(n_epochs+1)/video_length),1)
         print("Frames per second: ", fps)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         video = cv2.VideoWriter(folder+video_name+'.avi',fourcc,fps,(width, height))
@@ -80,11 +80,22 @@ def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
 
         if make_video:
             if it%plot_every==0:
-                fig = plt.figure(figsize=(12, 12))
-                #fig = plt.figure(figsize=(12, 12))
 
-                weight_list_visualize=[weight_list[j][:,:vis_subset[j]] for j in range(len(weight_list)-1)]+[weight_list[-1]]            
-                visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize)#,norm=norm)
+                fig = plt.figure(figsize=(12, 12))
+                #Visualize gradients:
+                weight_list_visualize=[weight_grad_list[j][:,:vis_subset[j]] for j in range(len(weight_list)-1)]+[weight_list[-1]]            
+                visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize,cmap=plt.cm.seismic)
+                fig.suptitle("Accuracy: %.4f"%acc_test)
+                #ax[1].plot(list(range(it)),val_acc_list)    
+                plt.savefig(filename)
+                video.write(cv2.imread(filename))
+                #cv2.waitKey(wait_per_frame)
+                plt.close()
+
+                fig = plt.figure(figsize=(12, 12))
+                #Visualize network:
+                weight_list_visualize=[weight_list[j][:,:vis_subset[j]] for j in range(len(weight_list)-1)]+[weight_grad_list[-1]]            
+                visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize,cmap=plt.cm.Greys)
                 fig.suptitle("Accuracy: %.4f"%acc_test)
                 #ax[1].plot(list(range(it)),val_acc_list)    
                 plt.savefig(filename)
