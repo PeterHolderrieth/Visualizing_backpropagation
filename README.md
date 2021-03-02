@@ -5,7 +5,7 @@
 This repostiory provides 
 
 1. A **visualization** tool for neural networks 
-2. A visualization for the **training** of neural networks giving illustrative videos.
+2. A visualization tool for the **training** of neural networks giving illustrative videos.
 3. An implementation of the backpropagation algorithm for fully connected neural networks.
 
 
