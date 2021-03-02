@@ -2,8 +2,8 @@
 
 # Visualizing backpropagation
 
-This repostiory serves as an illustration for the most important machine learning algorithm. It is meant to be useful for students
-studying the subject. We provide:
+This repostiory serves as an illustration for the famous backpropagation algorithm, 
+one ofthe most important machine learning algorithm. It is meant to be useful for students studying the subject. We provide:
 
 1. A **visualization** tool for neural networks 
 2. A visualization tool for the **training** of neural networks giving illustrative videos.
