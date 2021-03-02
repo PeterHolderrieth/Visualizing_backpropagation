@@ -8,14 +8,16 @@ from visualize_neural_nets import visualize_neural_net
 
 def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
                 X_train,Y_train,X_test,Y_test,print_every=100,
-                make_video=False,vis_subset=None,video_name=None,plot_every=None,video_length=None):
+                make_video=False,vis_subset=None,video_name=None,plot_every=None,video_length=None,prop_weight_to_grad=2):
 
+    #Number of layers:
     n_layers=len(dim_layers)-1
     
     #Initialize random weight list:
     weight_list=[np.random.normal(size=(dim_layers[it+1],dim_layers[it]),loc=0.,
                             scale=weight_scale) for it in range(n_layers)]
 
+    #Initialize logging lists:
     train_loss_list=[]
     train_acc_list=[]
     val_loss_list=[]
@@ -23,46 +25,65 @@ def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
 
 
     if make_video:
-        xlim=[0,n_epochs+3]
-        ylim=[0.4,1.]
-
-        #Setup video:
+        #Setup video
         folder = 'videos/'
         filename=folder+'random.png'
 
-        #Create figure of inital network:
-        fig = plt.figure(figsize=(12, 12))
-        #fig,ax = plt.subplots(ncols=2,nrows=1,figsize=(24, 12))
-        #ax[]
+        figsize=(12, 6)
+        #Create figure of inital network
+        fig,ax = plt.subplots(ncols=2,nrows=1,figsize=figsize)
+        
+        #Create subset of weights to visualize
         weight_list_visualize=[weight_list[j][:,:vis_subset[j]] for j in range(len(weight_list)-1)]+[weight_list[-1]]
-        visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize,cmap=plt.cm.Greys)
-        #visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize)
-        #ax[1].set_xlim(xlim)
-        #ax[1].set_ylim(ylim)
+        visualize_neural_net(ax[0], .01, .99, .01, .99, vis_subset,weight_list_visualize,cmap=plt.cm.copper,ranks=False,threshold=0.7)
+        
+        #Axis limits for logging
+        xlim=[0,n_epochs]
+        ylim=[0.5,1]
 
+        #Create initial logging plot
+        it_vec=np.arange(len(val_acc_list))
+        ax[1].plot(it_vec,train_acc_list,color='blue',label='train')  
+        ax[1].plot(it_vec,val_acc_list,color='orange',label='test')  
+        ax[1].set_xlim(xlim)
+        ax[1].set_ylim(ylim)
+        ax[1].set_xlabel("epoch")
+        ax[1].set_ylabel("accuracy")
+        ax[1].legend()
+
+        #Create initial figure and get geometry
         plt.savefig(filename)
-
         frame = cv2.imread(filename)
         height, width, layers = frame.shape
         
-        fps=max(int(0.5*(n_epochs+1)/video_length),1)
-        print("Frames per second: ", fps)
+        #Number of frames per iteration
+        n_frames_per_it=1+prop_weight_to_grad
+        #Number of total frames
+        n_frames_total=n_epochs*n_frames_per_it+1
+        #Frames per second:
+        fps=max(int(n_frames_total/video_length),1)
+
+        #Create video writer
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         video = cv2.VideoWriter(folder+video_name+'.avi',fourcc,fps,(width, height))
-        video.write(cv2.imread(filename))
-        #cv2.waitKey(wait_per_frame)
+
+        #Start with weight frame (twice the time to begin with)
+        for it in range(2*prop_weight_to_grad):
+            video.write(cv2.imread(filename))
+        
+        #Close figure
         plt.close()
 
 
     for it in range(n_epochs):
 
-        #Backpropagation: 
+        #Backpropagation
         weight_grad_list,loss,acc=backward(weight_list,X_train,Y_train)   
         
-        #Compute output on test set:
+        #Compute output on test set
         output,activ_list=forward(weight_list,X_test)
 
-        #Get loss and accuracy on test set:
+        #Get loss and accuracy on test set
         loss_test=loss_func(output,Y_test)
         acc_test=accuracy(output,Y_test)
         
@@ -80,28 +101,58 @@ def train_mlp(weight_scale,dim_layers,n_epochs,weight_decay,lr,
 
         if make_video:
             if it%plot_every==0:
+                
+                #--------------------------
+                #1. GRADIENT PLOT
+                #--------------------------
+                fig,ax = plt.subplots(nrows=1,ncols=2,figsize=figsize)
 
-                fig = plt.figure(figsize=(12, 12))
                 #Visualize gradients:
                 weight_list_visualize=[weight_grad_list[j][:,:vis_subset[j]] for j in range(len(weight_list)-1)]+[weight_list[-1]]            
-                visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize,cmap=plt.cm.seismic)
-                fig.suptitle("Accuracy: %.4f"%acc_test)
-                #ax[1].plot(list(range(it)),val_acc_list)    
-                plt.savefig(filename)
-                video.write(cv2.imread(filename))
-                #cv2.waitKey(wait_per_frame)
-                plt.close()
+                visualize_neural_net(ax[0], .01, .99, .01, .99, vis_subset,weight_list_visualize,cmap=plt.cm.cividis,ranks=True)
+                
+                #Visualize logging:
+                it_vec=np.arange(len(val_acc_list))
+                ax[1].plot(it_vec,train_acc_list,color='blue',label='train')  
+                ax[1].plot(it_vec,val_acc_list,color='orange',label='test')  
+                ax[1].set_xlim(xlim)
+                ax[1].set_ylim(ylim)
+                ax[1].set_xlabel("epoch")
+                ax[1].set_ylabel("accuracy")
+                ax[1].legend()
+                
+                #Create suptitle:
+                fig.suptitle("Gradients || Accuracy: %.4f"%acc_test)
 
-                fig = plt.figure(figsize=(12, 12))
+                #Save to video writer:
+                plt.savefig(filename)
+                video.write(cv2.imread(filename)) 
+                plt.close()
+                
+                #--------------------------
+                #1. WEIGHTS PLOT
+                #--------------------------
+                fig,ax = plt.subplots(nrows=1,ncols=2,figsize=figsize)
+                
                 #Visualize network:
                 weight_list_visualize=[weight_list[j][:,:vis_subset[j]] for j in range(len(weight_list)-1)]+[weight_grad_list[-1]]            
-                visualize_neural_net(fig.gca(), .1, .9, .1, .9, vis_subset,weight_list_visualize,cmap=plt.cm.Greys)
-                fig.suptitle("Accuracy: %.4f"%acc_test)
-                #ax[1].plot(list(range(it)),val_acc_list)    
+                visualize_neural_net(ax[0], .01, .99, .01, .99, vis_subset,weight_list_visualize,cmap=plt.cm.copper,ranks=False,threshold=0.7)
+                fig.suptitle("Weights  || Accuracy: %.4f"%acc_test)
+                
+                ax[1].plot(it_vec,train_acc_list,color='blue',label='train')  
+                ax[1].plot(it_vec,val_acc_list,color='orange',label='test')  
+                ax[1].set_xlim(xlim)
+                ax[1].set_ylim(ylim)
+                ax[1].set_xlabel("epoch")
+                ax[1].set_ylabel("accuracy")
+                ax[1].legend()
+
+
                 plt.savefig(filename)
-                video.write(cv2.imread(filename))
-                #cv2.waitKey(wait_per_frame)
+                for it in range(prop_weight_to_grad):
+                    video.write(cv2.imread(filename))
                 plt.close()
+                
 
     if make_video:
         cv2.destroyAllWindows()

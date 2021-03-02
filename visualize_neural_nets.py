@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np 
 from matplotlib.colors import Normalize
+from utils import give_ranks_of_array
 
-def visualize_neural_net(ax, left, right, bottom, top, layer_list,weight_list=None,cmap=None):
+def visualize_neural_net(ax, left, right, bottom, top, layer_list,weight_list,cmap=None,ranks=False,threshold=None):
     '''
     Function to visualize a multilayer perceptron (fully connected neural network)
     This is a modification of https://gist.github.com/craffel/2d727968c3aaebd10359
@@ -28,7 +29,7 @@ def visualize_neural_net(ax, left, right, bottom, top, layer_list,weight_list=No
     Output: 
         modified ax element
     '''
-    
+    ax.axis('off')
     #Set spacing:
     n_layers = len(layer_list)
     v_spacing = (top - bottom)/float(max(layer_list))
@@ -47,22 +48,31 @@ def visualize_neural_net(ax, left, right, bottom, top, layer_list,weight_list=No
     for n, (layer_size_a, layer_size_b) in enumerate(zip(layer_list[:-1], layer_list[1:])):
         layer_top_a = v_spacing*(layer_size_a - 1)/2. + (top + bottom)/2.
         layer_top_b = v_spacing*(layer_size_b - 1)/2. + (top + bottom)/2.
+
+        #Set normalization:
+        if ranks:
+            color_scale=give_ranks_of_array(weight_list[n])
+        else:
+            color_scale=weight_list[n]
         
-        if weight_list is not None:
-            vmax=weight_list[n].max()
-            vmin=0.5*(weight_list[n].max()-weight_list[n].min())+weight_list[n].min()
-            norm = Normalize(vmin=vmin, vmax=vmax,clip=True)
+        vmin=color_scale.min()
+        vmax=color_scale.max()
+
+        if threshold is not None:
+            vmin=threshold*vmax+(1-threshold)*vmin
+        norm = Normalize(vmin=vmin, vmax=vmax,clip=True)
 
         for m in range(layer_size_a):
             for o in range(layer_size_b):
-                line = plt.Line2D([n*h_spacing + left, (n + 1)*h_spacing + left],
+                
+                weight=color_scale[o,m]
+
+                if ranks or weight>vmin:
+                    line = plt.Line2D([n*h_spacing + left, (n + 1)*h_spacing + left],
                                   [layer_top_a - m*v_spacing, layer_top_b - o*v_spacing],c='k')
                 
-                if weight_list is not None:                    
-                    weight=weight_list[n][o,m]
                     line.set_color(color=cmap(norm(weight)))
-                    #line.set_alpha(0.4)
-                ax.add_artist(line)
+                    ax.add_artist(line)
     
     return(ax)
 

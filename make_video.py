@@ -22,7 +22,7 @@ X_test=X_test_transform[ignore_pcs:][permutation]
 
 #Set hyperparameters:
 WEIGHT_SCALE=0.01
-N_EPOCHS=400
+N_EPOCHS=200
 LR=1e-1
 WEIGHT_DECAY=0.0001
 DIM_LAYERS=[dim_input]+[20]+[1]
@@ -42,4 +42,4 @@ weight_list,train_loss_list,train_acc_list,test_loss_list,test_acc_list=train_ml
                                                                                 vis_subset=VIS_SUBSET,
                                                                                 video_name='test',
                                                                                 plot_every=1,
-                                                                                video_length=30)
+                                                                                video_length=60)
