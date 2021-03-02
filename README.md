@@ -12,7 +12,7 @@ This repostiory provides
 **1. Visualizing neural networks**
 
 This function is integrated in the 'visualize_neural_nets.py' file.
-![image](https://github.com/PeterHolderrieth/backpropagation/blob/master/plots/illustrate_visualization.pdf)
+![VisualizeNN](https://github.com/PeterHolderrieth/backpropagation/blob/master/plots/illustrate_visualization.pdf?raw=true)
 
 **2. Visualizing neural networks**
 
