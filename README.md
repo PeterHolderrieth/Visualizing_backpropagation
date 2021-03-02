@@ -3,7 +3,7 @@
 # Visualizing backpropagation
 
 This repostiory serves as an illustration for the classical backpropagation algorithm, 
-one of the most important machine learning algorithm. It is meant to be useful for students studying the subject. 
+one of the most important machine learning concepts. It is meant to be useful for students studying the subject. 
 We provide:
 
 1. A **visualization** tool for neural networks 
