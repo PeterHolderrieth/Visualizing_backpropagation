@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from sklearn.decomposition import PCA 
 
-from data.load_data import load_mnist_sevens_nines
+from load_data import load_mnist_sevens_nines
 from train_mlp import train_mlp 
 
 #Load data:
