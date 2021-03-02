@@ -79,12 +79,11 @@ def visualize_neural_net(ax, left, right, bottom, top, layer_list,weight_list,cm
 
 
 
-'''
 #Plot example:
 fig = plt.figure(figsize=(12, 12))
 
 #Number of layers:
-dim_layers=[30,30,15,10]
+dim_layers=[20,20,15,5]
 n_layers=len(dim_layers)-1
 weight_scale=0.1
 
@@ -95,5 +94,4 @@ weight_list=[np.random.normal(size=(dim_layers[it+1],dim_layers[it]),loc=0.,
 visualize_neural_net(fig.gca(), .01, .99, .01, .99, dim_layers, weight_list,cmap=plt.cm.coolwarm,threshold=0.2)
 
 plt.tight_layout()
-plt.savefig("plots/illustrate_visualization.pdf")
-'''
+plt.savefig("plots/illustrate_visualization.png")
